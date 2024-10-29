@@ -1,8 +1,11 @@
 {
   "name": "a-simple-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "set NODE_ENV=development && node app.js",
+    "dev": "set NODE_ENV=development && nodemon app.js",
+    "lint": "set \"NODE_ENV=development\" && eslint \"**/*.js\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,11 +16,21 @@
     "auth0": "^4.10.0",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "method-override": "^3.0.0",
     "mysql2": "^3.11.3",
     "nodemailer": "^6.9.15",
+    "nodemon": "^3.1.7",
     "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^8.57.1",
+    "eslint-config-google": "^0.14.0",
+    "globals": "^15.11.0",
+    "sequelize-cli": "^6.6.2"
   }
 }
