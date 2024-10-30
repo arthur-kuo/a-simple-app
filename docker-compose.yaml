@@ -18,6 +18,8 @@ services:
     depends_on:
       - db
     build: .
+    volumes:
+      - .:/app
     restart: unless-stopped
     env_file: ./.env
     ports:

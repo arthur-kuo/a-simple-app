@@ -4,10 +4,10 @@ const {
   signUp,
   login,
   googleOAuthCallback,
-} = require('../controllers/user-controller');
+} = require('../../controllers/user-controller');
 
 router.post('/signup', signUp);
-router.post('/login', login);
-router.get('/google/callback', googleOAuthCallback);
+// router.post('/login', login);
+// router.get('/google/callback', googleOAuthCallback);
 
 module.exports = router;
