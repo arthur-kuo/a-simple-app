@@ -18,13 +18,13 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      isVerified: {
+      is_verified: {
         type: Sequelize.BOOLEAN,
       },
-      loginCount: {
+      login_count: {
         type: Sequelize.INTEGER,
       },
-      lastSession: {
+      last_session: {
         type: Sequelize.DATE,
       },
       created_at: {
