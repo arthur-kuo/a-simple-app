@@ -1,13 +1,12 @@
 const {User} = require('../models');
-// const {sendVerificationEmail} = require('../utils/emailService');
 const {sendVerificationEmail} = require('../helpers/email-helper');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-// const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signUp = async (req, res) => {
-  // try {
+  try {
     const {name, email, password, confirmPassword} = req.body;
 
     // Validate required fields
@@ -51,10 +50,10 @@ const signUp = async (req, res) => {
     res.status(201).json({
       message: 'Registration successful. Please verify your email.',
     });
-  // } catch (error) {
-  //   console.error('Error during sign up:', error.message);
-  //   res.status(500).json({error: 'Internal server error.'});
-  // }
+  } catch (error) {
+    console.error('Error during sign up:', error.message);
+    res.status(500).json({error: 'Internal server error.'});
+  }
 };
 
 
@@ -81,9 +80,6 @@ const login = async (req, res) => {
   }
 };
 
-const googleAuth = async (req, res) => {
-  // Handle Google OAuth callback
-};
 
 const emailVerification = async (req, res) => {
   try {
@@ -104,4 +100,4 @@ const emailVerification = async (req, res) => {
 };
 
 
-module.exports = {signUp, login, googleAuth, emailVerification};
+module.exports = {signUp, login, emailVerification};
