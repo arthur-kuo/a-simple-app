@@ -76,12 +76,21 @@ const login = async (req, res) => {
     );
     user.loginCount += 1;
     await user.save();
+    res.cookie('token', token, {httpOnly: true, maxAge: 3600000});
     res.status(200).json({message: 'Login successful', token});
   } catch (error) {
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({error: 'Internal server error.'});
   }
 };
 
+const logout = (req, res, next) => {
+  try {
+    res.clearCookie('token');
+    return res.status(200).json({message: 'Logged out successfully'});
+  } catch (err) {
+    next(err);
+  }
+};
 
 const emailVerification = async (req, res) => {
   try {
@@ -102,4 +111,4 @@ const emailVerification = async (req, res) => {
 };
 
 
-module.exports = {signUp, login, emailVerification};
+module.exports = {signUp, login, logout, emailVerification};
