@@ -9,8 +9,10 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - "${DB_PORT}:3306"
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
     volumes:
       - db_data:/var/lib/mysql
+      - ./init-db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
     depends_on:
