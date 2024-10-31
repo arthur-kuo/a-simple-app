@@ -74,6 +74,8 @@ const login = async (req, res) => {
         process.env.JWT_SECRET,
         {expiresIn: '1h'},
     );
+    user.loginCount += 1;
+    await user.save();
     res.status(200).json({message: 'Login successful', token});
   } catch (error) {
     res.status(500).send('Internal Server Error');
