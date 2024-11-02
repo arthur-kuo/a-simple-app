@@ -4,13 +4,14 @@ const {
   signUp,
   login,
   logout,
+  getUserInfo,
 } = require('../../controllers/user-controller');
 
 router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/logout', logout);
-// router.get('/:id', getUserInfo);
-// router.post('/:id', editUserInfo);
-// =router.post('/:id', editProfile);
+router.get('/:id', getUserInfo);
+// router.put('/:id', editUserInfo);
+// router.put('/:id/reset-password', editUserPassword);
 
 module.exports = router;
