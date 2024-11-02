@@ -83,6 +83,7 @@ const login = async (req, res) => {
         {expiresIn: '1h'},
     );
     user.loginCount += 1;
+    user.lastSession = new Date();
     await user.save();
     res.cookie('token', token, {httpOnly: true, maxAge: 3600000});
     res.status(200).json({message: 'Login successful', token});
