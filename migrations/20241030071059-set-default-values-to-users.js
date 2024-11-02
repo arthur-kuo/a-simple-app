@@ -26,14 +26,17 @@ module.exports = {
     // Reverting the changes if needed
     await queryInterface.changeColumn('Users', 'is_verified', {
       type: Sequelize.BOOLEAN,
+      allowNull: true,
     });
 
     await queryInterface.changeColumn('Users', 'login_count', {
       type: Sequelize.INTEGER,
+      allowNull: true,
     });
 
     await queryInterface.changeColumn('Users', 'last_session', {
       type: Sequelize.DATE,
+      allowNull: true,
     });
   },
 };

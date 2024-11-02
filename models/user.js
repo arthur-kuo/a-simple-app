@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     name: DataTypes.STRING,
     isVerified: DataTypes.BOOLEAN,
+    isAdmin: DataTypes.BOOLEAN,
     loginCount: DataTypes.INTEGER,
     lastSession: DataTypes.DATE,
   }, {

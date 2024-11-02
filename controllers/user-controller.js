@@ -113,5 +113,4 @@ const emailVerification = async (req, res, next) => {
   }
 };
 
-
 module.exports = {signUp, login, logout, emailVerification};
