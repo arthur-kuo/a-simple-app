@@ -37,7 +37,12 @@ const signUp = async (req, res, next) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
-        error: 'Invalid password format. Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long.',
+        error: 'Invalid password format.' +
+         'Password must contain at least one lowercase letter,' +
+         'one uppercase letter,' +
+         'one digit,'+
+         'one special character,' +
+         'and be at least 8 characters long.',
       });
     }
 
@@ -62,10 +67,14 @@ const login = async (req, res) => {
     const user = await User.findOne({where: {email}});
 
     if (!user || !await bcrypt.compare(password, user.password)) {
-      return res.status(400).send('Invalid email or password');
+      return res.status(400).json({
+        error: 'Invalid email or password',
+      });
     }
     if (!user.isVerified) {
-      return res.status(403).send('Please verify your email before logging in');
+      return res.status(403).json({
+        error: 'Please verify your email before logging in',
+      });
     }
 
     const token = jwt.sign(
@@ -113,4 +122,21 @@ const emailVerification = async (req, res, next) => {
   }
 };
 
-module.exports = {signUp, login, logout, emailVerification};
+const getUserInfo = async (req, res, next) => {
+  try {
+    const userInfo = await User.findOne({
+      where: {id: req.params.id},
+      attributes: ['id', 'name', 'email'],
+    });
+    if (!userInfo || userInfo.isAdmin == true) {
+      return res.status(404).json({
+        error: 'User doesn\'t exist',
+      });
+    };
+    return res.status(200).json(userInfo);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {signUp, login, logout, emailVerification, getUserInfo};
