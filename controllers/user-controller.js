@@ -131,7 +131,7 @@ const getUserInfo = async (req, res, next) => {
     });
     if (!userInfo || userInfo.isAdmin == true) {
       return res.status(404).json({
-        error: 'User doesn\'t exist',
+        error: 'User not found',
       });
     };
     return res.status(200).json(userInfo);
@@ -140,4 +140,86 @@ const getUserInfo = async (req, res, next) => {
   }
 };
 
-module.exports = {signUp, login, logout, emailVerification, getUserInfo};
+const editUserInfo = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const {name} = req.body;
+
+    if (!name || name.length > 50) {
+      return res.status(400).json({
+        error: 'Invalid name.' +
+        'Name must be provided and less than 50 characters.',
+      });
+    }
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({error: 'User not found'});
+    }
+    user.name = name;
+    await user.save();
+    return res.status(200).json({
+      message: 'User name updated successfully',
+      user: {id: user.id, name: user.name, email: user.email},
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const editUserPassword = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const {oldPassword, newPassword, confirmPassword} = req.body;
+
+    // Check required fields
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        error: 'All password fields are required.',
+      });
+    }
+
+    // Find the user by ID
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({error: 'User not found'});
+    }
+
+    // Verify old password
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({error: 'Old password is incorrect'});
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({error: 'New passwords do not match'});
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        error: 'Invalid password format.' +
+         'Password must contain at least one lowercase letter,' +
+         'one uppercase letter,' +
+         'one digit,'+
+         'one special character,' +
+         'and be at least 8 characters long.',
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.status(200).json({message: 'Password updated successfully'});
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  signUp,
+  login,
+  logout,
+  emailVerification,
+  getUserInfo,
+  editUserInfo,
+  editUserPassword,
+};
