@@ -1,4 +1,5 @@
 require('dotenv').config();
+const pg = require('pg');
 
 module.exports = {
   development: {
@@ -17,5 +18,6 @@ module.exports = {
         rejectUnauthorized: false,
       },
     },
+    dialectModule: pg,
   },
 };
