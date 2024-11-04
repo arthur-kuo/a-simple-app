@@ -1,7 +1,6 @@
 const {User} = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const {Op} = require('sequelize');
 
 const login = async (req, res, next) => {
   try {
@@ -33,62 +32,4 @@ const login = async (req, res, next) => {
   }
 };
 
-const getUsers = async (req, res, next) => {
-  try {
-    const users = await User.findAll({
-      attributes: [
-        'id',
-        'email',
-        'name',
-        'createdAt',
-        'loginCount',
-        'lastSession',
-      ],
-      where: {isAdmin: false},
-      order: [['createdAt', 'DESC']],
-    });
-    res.status(200).json(users);
-  } catch (err) {
-    next(err);
-  }
-};
-
-const getUsersStatistics = async (req, res, next) => {
-  try {
-    // Total number of users
-    const totalUsers = await User.count({
-      where: {isAdmin: false},
-    });
-
-    // Users with active sessions today
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const activeSessionsToday = await User.count({
-      where: {
-        lastSession: {[Op.gte]: today},
-        isAdmin: false,
-      },
-    });
-
-    // Average number of active sessions over the last 7 days
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 7);
-    const activeSessionsLastWeek = await User.count({
-      where: {
-        lastSession: {[Op.gte]: sevenDaysAgo},
-        isAdmin: false,
-      },
-    });
-    const avgActiveSessions = (activeSessionsLastWeek / 7).toFixed(2);
-
-    res.status(200).json({
-      totalUsers,
-      activeSessionsToday,
-      avgActiveSessions,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-module.exports = {login, getUsers, getUsersStatistics};
+module.exports = {login};
