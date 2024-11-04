@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const {
   login,
-//   getUsers,
-//   getUserStatistics
+  getUsers,
+  getUsersStatistics,
 } = require('../../controllers/admin-controller');
 
 router.post('/login', login);
-// router.get('/dashboard', getUsers);
-// routers.get(/dashboard/stats, getUsersStatistics);
+router.get('/dashboard', getUsers);
+router.get('/dashboard/stats', getUsersStatistics);
 
 module.exports = router;

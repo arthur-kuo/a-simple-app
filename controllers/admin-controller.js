@@ -36,7 +36,15 @@ const login = async (req, res, next) => {
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.findAll({
-      attributes: ['id', 'email', 'name', 'createdAt', 'loginCount', 'lastSession'],
+      attributes: [
+        'id',
+        'email',
+        'name',
+        'createdAt',
+        'loginCount',
+        'lastSession',
+      ],
+      where: {isAdmin: false},
       order: [['createdAt', 'DESC']],
     });
     res.status(200).json(users);
@@ -48,7 +56,9 @@ const getUsers = async (req, res, next) => {
 const getUsersStatistics = async (req, res, next) => {
   try {
     // Total number of users
-    const totalUsers = await User.count();
+    const totalUsers = await User.count({
+      where: {isAdmin: false},
+    });
 
     // Users with active sessions today
     const today = new Date();
