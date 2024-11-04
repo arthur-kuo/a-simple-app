@@ -64,14 +64,20 @@ const getUsersStatistics = async (req, res, next) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const activeSessionsToday = await User.count({
-      where: {lastSession: {[Op.gte]: today}},
+      where: {
+        lastSession: {[Op.gte]: today},
+        isAdmin: false,
+      },
     });
 
     // Average number of active sessions over the last 7 days
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(today.getDate() - 7);
     const activeSessionsLastWeek = await User.count({
-      where: {lastSession: {[Op.gte]: sevenDaysAgo}},
+      where: {
+        lastSession: {[Op.gte]: sevenDaysAgo},
+        isAdmin: false,
+      },
     });
     const avgActiveSessions = (activeSessionsLastWeek / 7).toFixed(2);
 
