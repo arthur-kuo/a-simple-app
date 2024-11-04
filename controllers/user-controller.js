@@ -61,7 +61,7 @@ const signUp = async (req, res, next) => {
 };
 
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const {email, password} = req.body;
     const user = await User.findOne({where: {email}});
@@ -70,12 +70,17 @@ const login = async (req, res) => {
       return res.status(400).json({
         error: 'Invalid email or password',
       });
-    }
+    };
+    if (!user || user.isAdmin == true) {
+      return res.status(404).json({
+        error: 'User not found',
+      });
+    };
     if (!user.isVerified) {
       return res.status(403).json({
         error: 'Please verify your email before logging in',
       });
-    }
+    };
 
     const token = jwt.sign(
         {userId: user.id},
@@ -87,8 +92,8 @@ const login = async (req, res) => {
     await user.save();
     res.cookie('token', token, {httpOnly: true, maxAge: 3600000});
     res.status(200).json({message: 'Login successful', token});
-  } catch (error) {
-    res.status(500).json({error: 'Internal server error.'});
+  } catch (err) {
+    next(err);
   }
 };
 

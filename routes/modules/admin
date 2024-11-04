@@ -1,15 +1,13 @@
-// const express = require('express');
-// const router = express.Router();
-// const {
-//   login,
-//   logout,
+const express = require('express');
+const router = express.Router();
+const {
+  login,
 //   getUsers,
 //   getUserStatistics
-// } = require('../../controllers/user-controller');
+} = require('../../controllers/admin-controller');
 
-// router.post('/login', login);
-// router.post('/logout', logout);
+router.post('/login', login);
 // router.get('/dashboard', getUsers);
 // routers.get(/dashboard/stats, getUsersStatistics);
 
-// module.exports = router;
+module.exports = router;
