@@ -32,6 +32,46 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  login,
+const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'email', 'name', 'createdAt', 'loginCount', 'lastSession'],
+      order: [['createdAt', 'DESC']],
+    });
+    res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
 };
+
+const getUsersStatistics = async (req, res, next) => {
+  try {
+    // Total number of users
+    const totalUsers = await User.count();
+
+    // Users with active sessions today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const activeSessionsToday = await User.count({
+      where: {lastSession: {[Op.gte]: today}},
+    });
+
+    // Average number of active sessions over the last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    const activeSessionsLastWeek = await User.count({
+      where: {lastSession: {[Op.gte]: sevenDaysAgo}},
+    });
+    const avgActiveSessions = (activeSessionsLastWeek / 7).toFixed(2);
+
+    res.status(200).json({
+      totalUsers,
+      activeSessionsToday,
+      avgActiveSessions,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {login, getUsers, getUsersStatistics};
