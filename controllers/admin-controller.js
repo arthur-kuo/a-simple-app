@@ -1,6 +1,7 @@
 const {User} = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const {Op} = require('sequelize');
 
 const login = async (req, res, next) => {
   try {
