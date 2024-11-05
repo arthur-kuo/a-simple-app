@@ -3,6 +3,7 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 const cors = require('cors');
 const routes = require('./routes');
+const passport = require('./config/passport');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -24,6 +25,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(methodOverride('_method'));
 app.use(cors(corsOptions));
 app.use(routes);

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const {authenticated, authenticatedAdmin} = require('../../middleware/auth');
+const passport = require('../../config/passport');
 const {
   signUp,
   login,
@@ -15,9 +17,9 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/logout', logout);
 router.get('/dashboard', getUsers);
-router.get('/dashboard/stats', getUsersStatistics);
-router.put('/:id/reset-password', editUserPassword);
-router.get('/:id', getUserInfo);
-router.put('/:id', editUserInfo);
+router.get('/dashboard/stats', authenticated, getUsersStatistics);
+router.put('/:id/reset-password', authenticated, editUserPassword);
+router.get('/:id', authenticated, getUserInfo);
+router.put('/:id', authenticated, editUserInfo);
 
 module.exports = router;

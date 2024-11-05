@@ -9,7 +9,7 @@ export default [
     languageOptions: {
       sourceType: 'commonjs',
       globals: {
-        process: 'readonly', // 明確告訴 ESLint process 是只讀的
+        process: 'readonly',
       },
     },
   },
