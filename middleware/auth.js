@@ -4,7 +4,7 @@ const authenticated = (req, res, next) => {
   if (ensureAuthenticated(req)) {
     return next();
   }
-  res.redirect('/login');
+  res.redirect('/api/users/login');
 };
 module.exports = {
   authenticated,
