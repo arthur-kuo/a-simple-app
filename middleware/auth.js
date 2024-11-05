@@ -6,7 +6,7 @@ const authenticated = (req, res, next) => {
     if (err || !user) {
       return res.status(401).json({ status: 'error', message: 'Unauthorized' })
     }
-    req.user = user // JWT 沒有使用 session，所以需要手動設置
+    req.user = user
     return next()
   })(req, res, next)
 }
