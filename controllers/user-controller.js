@@ -9,6 +9,7 @@ const {Op} = require('sequelize');
 
 const signUp = async (req, res, next) => {
   try {
+    
     const {name, email, password, confirmPassword} = req.body;
 
     // Validate required fields
@@ -24,6 +25,7 @@ const signUp = async (req, res, next) => {
     const userEmail = await User.findOne({
       where: {email: normalizedEmail},
     });
+    console.log(userEmail)
     if (userEmail) {
       return res.status(400).json({
         error: 'Email is already registered.',
