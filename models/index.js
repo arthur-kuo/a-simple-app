@@ -1,5 +1,4 @@
 'use strict';
-require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -8,6 +7,12 @@ const env = process.env.NODE_ENV || 'development';
 const enVariables = require(path.resolve(__dirname, '../config/config.json'));
 const config = enVariables;
 const db = {};
+
+if (process.env.NODE_ENV !== 'production') {
+  console.log(process.env.NODE_ENV)
+  require('dotenv').config();
+}
+
 
 // console.log("process.env", process.env)
 // console.log("enVariables", enVariables)
