@@ -15,7 +15,7 @@ const sendVerificationEmail = async (user) => {
     to: user.email,
     from: process.env.SENDER_EMAIL,
     subject: 'Please verify your email',
-    templateId: 'your-template-id',
+    templateId: 'a-simple-app',
     dynamicTemplateData: {
       verificationUrl: verificationUrl,
       username: user.username,
