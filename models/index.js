@@ -13,10 +13,10 @@ const db = {};
 // console.log("enVariables", enVariables)
 // console.log(process.env[config.production.use_env_variable])
 
-// console.log('config:', config)
+// console.log('config:', config.production.dialectModule)
 let sequelize;
 if (process.env[config.production.use_env_variable]) {
-  sequelize = new Sequelize(process.env[config.production.use_env_variable], config,);
+  sequelize = new Sequelize(process.env[config.production.use_env_variable], {dialectModule: require('pg')});
 } else {
   sequelize = new Sequelize(
     config.database,
