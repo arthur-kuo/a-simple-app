@@ -5,9 +5,10 @@ const cors = require('cors');
 const routes = require('./routes');
 const passport = require('./config/passport');
 
-
-  require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
   console.log(process.env.NODE_ENV)
+  require('dotenv').config();
+}
 
 const corsOptions = {
   origin: '*',
