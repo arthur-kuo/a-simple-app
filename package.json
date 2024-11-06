@@ -6,13 +6,16 @@
     "start": "set NODE_ENV=production && nodemon app.js",
     "dev": "set NODE_ENV=development && nodemon app.js",
     "lint": "set \"NODE_ENV=development\" && eslint \"**/*.js\" --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node scripts/migrate.js",
+    "vercel-build": "npm run migrate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@babel/register": "^7.25.9",
     "@sendgrid/mail": "^8.1.4",
     "@vercel/postgres": "^0.10.0",
     "auth0": "^4.10.0",
@@ -33,7 +36,7 @@
     "passport-local": "^1.0.0",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.31.1",
+    "sequelize": "^6.37.5",
     "sequelize-cockroachdb": "^6.0.5"
   },
   "devDependencies": {
