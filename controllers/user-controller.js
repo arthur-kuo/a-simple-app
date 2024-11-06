@@ -1,19 +1,13 @@
-const User = require('../models/user');
+const {User} = require('../models');
 const {sendVerificationEmail} = require('../helpers/email-helper');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const {Op} = require('sequelize');
-const path = require('path');
-const env = process.env.NODE_ENV || 'development';
-const config = require(path.resolve(__dirname, '../config/config.json'))[env];
 
 
 const signUp = async (req, res, next) => {
-  console.log('config666:', config)
-  console.log(env)
-
   try {
     const {name, email, password, confirmPassword} = req.body;
 
