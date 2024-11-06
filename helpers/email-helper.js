@@ -9,18 +9,17 @@ const sendVerificationEmail = async (user) => {
       process.env.JWT_SECRET,
       {expiresIn: '1d'},
   );
-  const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
+  const verificationUrl = `${process.env.APP_URL}/api/users/emailVerification?token=${token}`;
 
   const msg = {
     to: user.email,
     from: process.env.SENDER_EMAIL,
     subject: 'Please verify your email',
-    text: `Please verify your email by clicking on the link: ${
-      verificationUrl
-    }`,
-    html: `<p>Please verify your email by clicking on the link: <a href="${
-      verificationUrl
-    }">Verify Email</a></p>`,
+    templateId: 'your-template-id',
+    dynamicTemplateData: {
+      verificationUrl: verificationUrl,
+      username: user.username,
+    },
   };
 
   await sgMail.send(msg);
