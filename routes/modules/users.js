@@ -6,6 +6,7 @@ const {
   signUp,
   login,
   logout,
+  emailVerification,
   getUserInfo,
   editUserInfo,
   editUserPassword,
@@ -16,7 +17,8 @@ const {
 router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/logout', logout);
-router.get('/dashboard', getUsers);
+router.post('/emailVerification', emailVerification);
+router.get('/dashboard', authenticated, getUsers);
 router.get('/dashboard/stats', authenticated, getUsersStatistics);
 router.put('/:id/reset-password', authenticated, editUserPassword);
 router.get('/:id', authenticated, getUserInfo);
