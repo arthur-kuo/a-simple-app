@@ -10,7 +10,7 @@ const sendVerificationEmail = async (user) => {
       process.env.JWT_SECRET,
       {expiresIn: '1d'},
   );
-  const verificationUrl = `${process.env.APP_URL}api/users/emailVerification?token=${token}`;
+  const verificationUrl = `${process.env.APP_URL}/api/users/emailVerification?token=${token}`;
 
   const msg = {
     to: user.email,
