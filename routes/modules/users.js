@@ -17,7 +17,7 @@ const {
 router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/logout', logout);
-router.post('/emailVerification', emailVerification);
+router.get('/emailVerification', emailVerification); // "when I send the same request twice, does this make a different state on server?
 router.get('/dashboard', authenticated, getUsers);
 router.get('/dashboard/stats', authenticated, getUsersStatistics);
 router.put('/:id/reset-password', authenticated, editUserPassword);
