@@ -25,7 +25,6 @@ const signUp = async (req, res, next) => {
     const userEmail = await User.findOne({
       where: {email: normalizedEmail},
     });
-    console.log(userEmail)
     if (userEmail) {
       return res.status(400).json({
         error: 'Email is already registered.',
@@ -53,13 +52,18 @@ const signUp = async (req, res, next) => {
     // Encrypt password and create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({email, password: hashedPassword, name});
-
+    console.log(user.dataValues)
     // Send verification email
-    await sendVerificationEmail(user);
+    await sendVerificationEmail(user.dataValues);
     res.status(201).json({
       message: 'Registration successful. Please verify your email.',
     });
   } catch (err) {
+    console.error('Full error:', {
+      message: err.message,
+      response: err.response?.body,
+      code: err.code
+    });
     next(err);
   }
 };
