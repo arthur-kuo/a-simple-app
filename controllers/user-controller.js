@@ -132,6 +132,11 @@ const emailVerification = async (req, res, next) => {
 
     return res.status(200).json({message: 'Email verification successful'});
   } catch (err) {
+    console.error('Full error:', {
+      message: err.message,
+      response: err.response?.body,
+      code: err.code
+    });
     next(err);
   }
 };
