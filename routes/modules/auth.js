@@ -14,7 +14,7 @@ router.get('/google/callback',
         },
     ),
     (req, res) => {
-      res.redirect('/');
+      res.status(200).json({message: 'Login successful', token});
     },
 );
 
