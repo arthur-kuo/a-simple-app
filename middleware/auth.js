@@ -1,14 +1,11 @@
-const {ensureAuthenticated} = require('../helpers/auth-helpers');
-const passport = require('../config/passport')
-
+const helpers = require('../helpers/auth-helpers')
 const authenticated = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (err, user) => {
-    if (err || !user) {
-      return res.status(401).json({ status: 'error', message: 'Unauthorized' })
-    }
-    req.user = user
+  // if (req.isAuthenticated)
+  if (helpers.ensureAuthenticated(req)) {
     return next()
-  })(req, res, next)
+  }
+  // res.redirect('/signin')
+  res.status(401).json({ status: 'error', message: 'Unauthorized' })
 }
 
 module.exports = {

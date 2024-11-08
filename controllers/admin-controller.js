@@ -12,7 +12,7 @@ const login = async (req, res, next) => {
         error: 'Invalid email or password',
       });
     };
-    if (!user || user.isAdmin == false) {
+    if (!user || user.isAdmin === false) {
       return res.status(404).json({
         error: 'User not found',
       });

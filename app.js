@@ -6,7 +6,7 @@ const routes = require('./routes');
 const passport = require('./config/passport');
 
 if (process.env.NODE_ENV !== 'production') {
-  console.log(process.env.NODE_ENV)
+  // console.log(process.env.NODE_ENV)
   require('dotenv').config();
 }
 
@@ -25,6 +25,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

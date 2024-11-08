@@ -9,7 +9,7 @@ const config = enVariables;
 const db = {};
 
 if (process.env.NODE_ENV !== 'production') {
-  console.log(process.env.NODE_ENV)
+  // console.log(process.env.NODE_ENV)
   require('dotenv').config();
 }
 

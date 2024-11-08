@@ -12,7 +12,7 @@ const signUp = async (req, res, next) => {
     
     const {name, email, password, confirmPassword} = req.body;
 
-    // Validate required fields
+    // Validate required fields 
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({error: 'All fields are required.'});
     }
@@ -79,7 +79,7 @@ const login = async (req, res, next) => {
         error: 'Invalid email or password',
       });
     };
-    if (!user || user.isAdmin == true) {
+    if (!user || user.isAdmin === true) {
       return res.status(404).json({
         error: 'User not found',
       });
@@ -107,8 +107,10 @@ const login = async (req, res, next) => {
 
 const logout = (req, res, next) => {
   try {
+    // Clear the JWT cookie
     res.clearCookie('token');
-    return res.status(200).json({message: 'Logged out successfully'});
+
+    res.status(200).json({ message: 'Logged out successfully' });
   } catch (err) {
     next(err);
   }
@@ -119,8 +121,6 @@ const emailVerification = async (req, res, next) => {
     const {token} = req.query;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.userId);
-
-    console.log(decoded)
 
     if (!user) {
       return res.status(404).json({error: 'User not found'});
