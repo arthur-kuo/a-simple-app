@@ -99,7 +99,7 @@ const login = async (req, res, next) => {
     user.lastSession = new Date();
     await user.save();
     res.cookie('token', token, {httpOnly: true, maxAge: 3600000});
-    res.status(200).json({message: 'Login successful', token});
+    return res.status(200).json({message: 'Login successful', token});
   } catch (err) {
     next(err);
   }
