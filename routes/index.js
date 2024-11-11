@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 router.use('/api/users', users);
-router.use('/api/auth', auth);
+router.use('/auth', auth);
 router.get('/', (req, res)=>{
   res.send('Hello World!');
 });
