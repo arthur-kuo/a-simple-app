@@ -70,6 +70,7 @@ passport.use(new GoogleStrategy({
     }
 
     done(null, user);
+    await user.save();
   } catch (err) {
     done(err, false);
   }
