@@ -79,14 +79,10 @@ const login = async (req, res, next) => {
         error: 'Invalid email or password',
       });
     };
-    if (!user || user.isAdmin === true) {
-      return res.status(404).json({
-        error: 'User not found',
-      });
-    };
     if (!user.isVerified) {
       return res.status(403).json({
         error: 'Please verify your email before logging in',
+        isVerified: false,
       });
     };
 

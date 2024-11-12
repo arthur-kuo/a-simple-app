@@ -4,6 +4,7 @@ const methodOverride = require('method-override');
 const cors = require('cors');
 const routes = require('./routes');
 const passport = require('./config/passport');
+const path = require('path');
 
 if (process.env.NODE_ENV !== 'production') {
   // console.log(process.env.NODE_ENV)
@@ -36,6 +37,8 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 app.use(cors(corsOptions));
 app.use(routes);
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

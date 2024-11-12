@@ -1,0 +1,90 @@
+<!-- email-verification.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification Required</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Email Verification Required</h1>
+        <p>Please check your email to verify your account. If you haven't received the verification email, click the button below to resend it.</p>
+        
+        <button id="resend-btn">Resend Verification Email</button>
+        <p id="resend-error" class="error-message"></p>
+        
+        <div id="verification-status"></div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's a verification token in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+            verifyEmail(token);
+        }
+
+        // Handle resend verification email
+        document.getElementById('resend-btn').addEventListener('click', async () => {
+            const errorElement = document.getElementById('resend-error');
+            
+            try {
+                const response = await fetch('/api/users/emailVerification', {
+                    method: 'GET'
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                alert('Verification email has been resent. Please check your inbox.');
+                errorElement.style.display = 'none';
+            } catch (error) {
+                errorElement.textContent = error.message;
+                errorElement.style.display = 'block';
+            }
+        });
+
+        // Handle email verification
+        async function verifyEmail(token) {
+            try {
+                const response = await fetch(`/api/users/emailVerification?token=${token}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('verification-status').innerHTML = `
+                        <h2>Email Verified Successfully!</h2>
+                        <p>You can now <a href="/">login to your account</a>.</p>
+                    `;
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                document.getElementById('verification-status').innerHTML = `
+                    <h2>Verification Failed</h2>
+                    <p>Error: ${error.message}</p>
+                    <p>Please try again or contact support.</p>
+                `;
+            }
+        }
+    });
+    </script>
+</body>
+</html>

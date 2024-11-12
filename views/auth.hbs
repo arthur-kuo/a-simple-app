@@ -1,0 +1,170 @@
+<!-- auth.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+    <style>
+        .error-message {
+            color: red;
+            display: none;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>A Simple App!!!</h1>
+        
+        <div id="signup-section">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Name:</label>
+                    <input type="text" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email:</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password:</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password:</label>
+                    <input type="password" id="signup-confirm-password" required>
+                </div>
+                <button type="submit">Sign Up</button>
+                <p id="signup-error" class="error-message"></p>
+            </form>
+        </div>
+
+        <div id="login-section">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+            
+            <div class="google-signin">
+                <p>Or login with Google</p>
+                <a href="/api/auth/google" class="google-btn">Google Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetch('/api/users/dashboard', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/dashboard';
+                } else {
+                    localStorage.removeItem('token');
+                }
+            });
+        }
+
+        // Signup Form Handler
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorElement = document.getElementById('signup-error');
+            
+            try {
+                const response = await fetch('/api/users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('signup-name').value,
+                        email: document.getElementById('signup-email').value,
+                        password: document.getElementById('signup-password').value,
+                        confirmPassword: document.getElementById('signup-confirm-password').value
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                window.location.href = '/email-verification';
+            } catch (error) {
+                errorElement.textContent = error.message;
+                errorElement.style.display = 'block';
+            }
+        });
+
+        // Login Form Handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorElement = document.getElementById('login-error');
+            
+            try {
+                const response = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById('login-email').value,
+                        password: document.getElementById('login-password').value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.isVerified) {
+                    // Redirect to email verification page if the user is not verified
+                    window.location.href = '/email-verification';
+                } else if (!response.ok) {
+                    throw new Error(data.error);
+                } else {
+                    // Store token and redirect to dashboard if verified
+                    localStorage.setItem('token', data.token);
+                    window.location.href = '/dashboard';
+                }
+            } catch (error) {
+                errorElement.textContent = error.message;
+                errorElement.style.display = 'block';
+            }
+        });
+    });
+    </script>
+</body>
+</html>
