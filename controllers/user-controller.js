@@ -82,6 +82,7 @@ const login = async (req, res, next) => {
     if (!user.isVerified) {
       return res.status(403).json({
         error: 'Please verify your email before logging in',
+        token,
         isVerified: false,
       });
     };
@@ -95,7 +96,7 @@ const login = async (req, res, next) => {
     user.lastSession = new Date();
     await user.save();
     res.cookie('token', token, {httpOnly: true, maxAge: 3600000});
-    return res.status(200).json({message: 'Login successful', token});
+    return res.status(200).json({message: 'Login successful', token, isVerified: true});
   } catch (err) {
     next(err);
   }
@@ -138,6 +139,23 @@ const emailVerification = async (req, res, next) => {
     next(err);
   }
 };
+
+const resendVerifictionEmail = async (req, res, next) => {
+  try{
+    const user = await User.findOne({where: {email}});
+    if (!user){
+      return res.status(400).json({ error: 'User not found.'});
+    }
+    await sendVerifictionEmail(user.datavalues);
+    res.status(200).json({
+      message: 'Verification email resent successfully. Please verify your email.',
+    })
+  } catch(err){
+    next(err)
+  }
+}
+
+
 
 const getUserInfo = async (req, res, next) => {
   try {
@@ -293,6 +311,7 @@ module.exports = {
   login,
   logout,
   emailVerification,
+  resendVerifictionEmail,
   getUserInfo,
   editUserInfo,
   editUserPassword,

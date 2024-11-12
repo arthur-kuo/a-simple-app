@@ -1,4 +1,3 @@
-<!-- email-verification.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,63 +27,70 @@
         
         <div id="verification-status"></div>
     </div>
-
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Check if there's a verification token in the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-
-        if (token) {
-            verifyEmail(token);
-        }
-
-        // Handle resend verification email
-        document.getElementById('resend-btn').addEventListener('click', async () => {
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
             const errorElement = document.getElementById('resend-error');
+            const verificationStatus = document.getElementById('verification-status');
             
-            try {
-                const response = await fetch('/api/users/emailVerification', {
-                    method: 'GET'
-                });
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
 
-                const data = await response.json();
+            // Handle resend verification email
+            document.getElementById('resend-btn').addEventListener('click', async () => {
+                const resendBtn = document.getElementById('resend-btn');
+                resendBtn.disabled = true;
+                errorElement.style.display = 'none'; // Clear previous error messages
                 
-                if (!response.ok) {
-                    throw new Error(data.error);
-                }
+                try {
+                    const response = await fetch('/api/users/resendVerifactionEmail', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,  // Use token from localStorage
+                        }
+                    });
 
-                alert('Verification email has been resent. Please check your inbox.');
-                errorElement.style.display = 'none';
-            } catch (error) {
-                errorElement.textContent = error.message;
-                errorElement.style.display = 'block';
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to resend the verification email.');
+                    }
+
+                    alert('Verification email has been resent. Please check your inbox.');
+                    resendBtn.disabled = false;
+                } catch (error) {
+                    errorElement.textContent = error.message;
+                    errorElement.style.display = 'block';
+                    resendBtn.disabled = false;
+                }
+            });
+
+            // Handle email verification
+            async function verifyEmail(token) {
+                try {
+                    const response = await fetch(`/api/users/verifyEmail?token=${token}`);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        verificationStatus.innerHTML = `
+                            <h2>Email Verified Successfully!</h2>
+                            <p>You can now <a href="/">login to your account</a>.</p>
+                        `;
+                    } else {
+                        console.log(data);
+                        throw new Error(data.error || 'Verification failed.');
+                    }
+                } catch (error) {
+                    next(err)
+                }
+            }
+
+            // Only verify if a token exists
+            if (token) {
+                verifyEmail(token);
             }
         });
-
-        // Handle email verification
-        async function verifyEmail(token) {
-            try {
-                const response = await fetch(`/api/users/emailVerification?token=${token}`);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('verification-status').innerHTML = `
-                        <h2>Email Verified Successfully!</h2>
-                        <p>You can now <a href="/">login to your account</a>.</p>
-                    `;
-                } else {
-                    throw new Error(data.error);
-                }
-            } catch (error) {
-                document.getElementById('verification-status').innerHTML = `
-                    <h2>Verification Failed</h2>
-                    <p>Error: ${error.message}</p>
-                    <p>Please try again or contact support.</p>
-                `;
-            }
-        }
-    });
     </script>
 </body>
 </html>
