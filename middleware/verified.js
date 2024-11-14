@@ -1,4 +1,4 @@
-const User = require('../models/User'); // Adjust based on your model
+const User = require('../models/user'); // Adjust based on your model
 
 const emailVerified = async (req, res, next) => {
   console.log(req)
