@@ -5,21 +5,22 @@ const cors = require('cors');
 const routes = require('./routes');
 const passport = require('./config/passport');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger-output.json');
 
 if (process.env.NODE_ENV !== 'production') {
   // console.log(process.env.NODE_ENV)
   require('dotenv').config();
 }
-
 const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
-
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(session({
@@ -29,8 +30,8 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
-  }
+    maxAge: 24 * 60 * 60 * 1000,
+  },
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -40,6 +41,9 @@ app.use(routes);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`);
+  console.log(`Swagger UI available on /api/docs`);
+});
 
 module.exports = app;

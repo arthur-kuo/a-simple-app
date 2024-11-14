@@ -9,10 +9,9 @@ const {Op} = require('sequelize');
 
 const signUp = async (req, res, next) => {
   try {
-    
     const {name, email, password, confirmPassword} = req.body;
 
-    // Validate required fields 
+    // Validate required fields
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({error: 'All fields are required.'});
     }
@@ -52,7 +51,7 @@ const signUp = async (req, res, next) => {
     // Encrypt password and create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({email, password: hashedPassword, name});
-    console.log(user.dataValues)
+    console.log(user.dataValues);
     // Send verification email
     await sendVerificationEmail(user.dataValues);
     res.status(201).json({
@@ -62,7 +61,7 @@ const signUp = async (req, res, next) => {
     console.error('Full error:', {
       message: err.message,
       response: err.response?.body,
-      code: err.code
+      code: err.code,
     });
     next(err);
   }
@@ -79,6 +78,13 @@ const login = async (req, res, next) => {
         error: 'Invalid email or password',
       });
     };
+
+    const token = jwt.sign(
+      {userId: user.id},
+      process.env.JWT_SECRET,
+      {expiresIn: '1h'},
+    );
+
     if (!user.isVerified) {
       return res.status(403).json({
         error: 'Please verify your email before logging in',
@@ -87,11 +93,6 @@ const login = async (req, res, next) => {
       });
     };
 
-    const token = jwt.sign(
-        {userId: user.id},
-        process.env.JWT_SECRET,
-        {expiresIn: '1h'},
-    );
     user.loginCount += 1;
     user.lastSession = new Date();
     await user.save();
@@ -107,7 +108,7 @@ const logout = (req, res, next) => {
     // Clear the JWT cookie
     res.clearCookie('token');
 
-    res.status(200).json({ message: 'Logged out successfully' });
+    res.status(200).json({message: 'Logged out successfully'});
   } catch (err) {
     next(err);
   }
@@ -134,27 +135,26 @@ const emailVerification = async (req, res, next) => {
     console.error('Full error:', {
       message: err.message,
       response: err.response?.body,
-      code: err.code
+      code: err.code,
     });
     next(err);
   }
 };
 
 const resendVerifictionEmail = async (req, res, next) => {
-  try{
+  try {
     const user = await User.findOne({where: {email}});
-    if (!user){
-      return res.status(400).json({ error: 'User not found.'});
+    if (!user) {
+      return res.status(400).json({error: 'User not found.'});
     }
     await sendVerifictionEmail(user.datavalues);
     res.status(200).json({
       message: 'Verification email resent successfully. Please verify your email.',
-    })
-  } catch(err){
-    next(err)
+    });
+  } catch (err) {
+    next(err);
   }
-}
-
+};
 
 
 const getUserInfo = async (req, res, next) => {

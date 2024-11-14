@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendVerificationEmail = async (user) => {
-  console.log(user)
+  console.log(user);
   const token = jwt.sign(
       {userId: user.id},
       process.env.JWT_SECRET,
@@ -21,7 +21,7 @@ const sendVerificationEmail = async (user) => {
       username: user.name,
     },
   };
-  console.log(msg)
+  console.log(msg);
 
   await sgMail.send(msg);
 };

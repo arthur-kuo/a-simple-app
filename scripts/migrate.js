@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const {execSync} = require('child_process');
 const path = require('path');
 
 async function migrate() {
@@ -7,9 +7,9 @@ async function migrate() {
     process.chdir(rootDir);
 
     console.log('Starting database migration...');
-    
-    execSync('npx sequelize db:migrate', { stdio: 'inherit' });
-    
+
+    execSync('npx sequelize db:migrate', {stdio: 'inherit'});
+
     console.log('Migration completed successfully');
     process.exit(0);
   } catch (error) {
