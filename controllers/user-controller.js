@@ -141,21 +141,30 @@ const emailVerification = async (req, res, next) => {
   }
 };
 
-const resendVerifictionEmail = async (req, res, next) => {
+const resendVerificationEmail = async (req, res, next) => {
   try {
-    const user = await User.findOne({where: {email}});
-    if (!user) {
-      return res.status(400).json({error: 'User not found.'});
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log(token)
+
+    if (!token) {
+      return res.status(401).json({ error: 'Token is missing.' });
     }
-    await sendVerifictionEmail(user.datavalues);
-    res.status(200).json({
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByPk(decoded.userId);
+    if (!user) {
+      return res.status(400).json({ error: 'User not found.' });
+    }
+
+    await sendVerificationEmail(user.dataValues);
+    return res.status(200).json({
       message: 'Verification email resent successfully. Please verify your email.',
     });
   } catch (err) {
     next(err);
   }
 };
-
 
 const getUserInfo = async (req, res, next) => {
   try {
@@ -205,20 +214,16 @@ const editUserPassword = async (req, res, next) => {
     const userId = req.params.id;
     const {oldPassword, newPassword, confirmPassword} = req.body;
 
-    // Check required fields
     if (!oldPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({
         error: 'All password fields are required.',
       });
     }
 
-    // Find the user by ID
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({error: 'User not found'});
     }
-
-    // Verify old password
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({error: 'Old password is incorrect'});
@@ -311,7 +316,7 @@ module.exports = {
   login,
   logout,
   emailVerification,
-  resendVerifictionEmail,
+  resendVerificationEmail,
   getUserInfo,
   editUserInfo,
   editUserPassword,

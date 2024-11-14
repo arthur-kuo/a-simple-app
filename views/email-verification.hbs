@@ -38,17 +38,16 @@
                 return;
             }
 
-            // Handle resend verification email
             document.getElementById('resend-btn').addEventListener('click', async () => {
                 const resendBtn = document.getElementById('resend-btn');
                 resendBtn.disabled = true;
-                errorElement.style.display = 'none'; // Clear previous error messages
+                errorElement.style.display = 'none'; 
                 
                 try {
-                    const response = await fetch('/api/users/resendVerifactionEmail', {
+                    const response = await fetch('/api/users/resendVerificationEmail', {
                         method: 'GET',
                         headers: {
-                            'Authorization': `Bearer ${token}`,  // Use token from localStorage
+                            'Authorization': `Bearer ${token}`,
                         }
                     });
 
@@ -65,31 +64,6 @@
                     resendBtn.disabled = false;
                 }
             });
-
-            // Handle email verification
-            async function verifyEmail(token) {
-                try {
-                    const response = await fetch(`/api/users/verifyEmail?token=${token}`);
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        verificationStatus.innerHTML = `
-                            <h2>Email Verified Successfully!</h2>
-                            <p>You can now <a href="/">login to your account</a>.</p>
-                        `;
-                    } else {
-                        console.log(data);
-                        throw new Error(data.error || 'Verification failed.');
-                    }
-                } catch (error) {
-                    next(err)
-                }
-            }
-
-            // Only verify if a token exists
-            if (token) {
-                verifyEmail(token);
-            }
         });
     </script>
 </body>

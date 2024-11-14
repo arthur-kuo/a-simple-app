@@ -8,7 +8,7 @@ const {
   login,
   logout,
   emailVerification,
-  resendVerifictionEmail,
+  resendVerificationEmail,
   getUserInfo,
   editUserInfo,
   editUserPassword,
@@ -20,7 +20,7 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/logout', logout);
 router.get('/emailVerification', emailVerification); // "when I send the same request twice, does this make a different state on server?
-router.get('/resendVerifictionEmail', resendVerifictionEmail);
+router.get('/resendVerificationEmail', resendVerificationEmail);
 router.get('/dashboard', authenticated, getUsers);
 router.get('/dashboard/stats', authenticated, getUsersStatistics);
 router.put('/:id/reset-password', authenticated, editUserPassword);
