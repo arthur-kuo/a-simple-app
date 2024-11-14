@@ -54,24 +54,38 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: process.env.GGcallbackURL,
-  scope: ['email'],
+  scope: ['email', 'profile'],
   state: true,
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    const email = profile.emails[0].value;
+    console.log('Google profile:', profile);
 
-    let user = await User.findOne({where: {email}});
+    // Check if profile has emails
+    if (!profile.emails || profile.emails.length === 0) {
+      return done(new Error('Email not found in Google profile'));
+    }
+
+    const { name, email} = profile._json
+    
+    let user = await User.findOne({ where: { email } });
 
     if (!user) {
       user = await User.create({
         email,
+        name,
         isVerified: true,
       });
     }
 
-    done(null, user);
+    // Save the user
+    console.log('Saving user:', user);
     await user.save();
+
+    // Return the user to passport
+    done(null, user);
+
   } catch (err) {
+    console.error('Error during Google login:', err);
     done(err, false);
   }
 }));

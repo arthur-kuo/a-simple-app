@@ -28,6 +28,7 @@
             margin-bottom: 10px;
         }
     </style>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
     <div class="form-container">
@@ -71,7 +72,6 @@
                 <button type="submit">Login</button>
                 <p id="login-error" class="error-message"></p>
             </form>
-            
             <div class="google-signin">
                 <p>Or login with Google</p>
                 <a href="/api/auth/google" class="google-btn">Google Login</a>
@@ -149,9 +149,8 @@
 
                 const data = await response.json();
 
-                if (!data.isVerified) {
+                if (response.status === 403) {
                     // Redirect to email verification page if the user is not verified
-                    localStorage.setItem('token', data.token);
                     window.location.href = '/email-verification';
                 } else if (!response.ok) {
                     throw new Error(data.error);
@@ -166,6 +165,33 @@
             }
         });
     });
+
+    function onSignIn(googleUser) {
+        // Get the ID token from Google
+        const id_token = googleUser.getAuthResponse().id_token;
+
+        // Send the token to your backend for validation and create a session or a custom token
+        fetch('/api/auth/google', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: id_token })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Assuming the response contains a token (backend should return it)
+            if (data.token) {
+                // Store the token in localStorage
+                localStorage.setItem('token', data.token);
+                // Redirect to the dashboard
+                window.location.href = '/dashboard';
+            } else {
+                console.error('Google login failed');
+            }
+        })
+        .catch(error => console.error('Error during Google login:', error));
+    }
     </script>
 </body>
 </html>

@@ -1,11 +1,10 @@
-const User = require('../models/user'); // Adjust based on your model
+const User = require('../models/user');
 
 const emailVerified = async (req, res, next) => {
-  console.log(req)
-    const userId = req.user.userId; // Access the userId from the decoded token
+    const userId = req.user.userId;
 
     const user = await User.findById(userId);
-    console.log(req)
+    console.log('user:', user)
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -14,9 +13,7 @@ const emailVerified = async (req, res, next) => {
     if (!user.emailVerified) {
       return res.status(400).json({ error: 'Email not verified' });
     }
-
-    next(); // Proceed to the next middleware (getUsers)
-
+    next();
 };
 
 module.exports = {
