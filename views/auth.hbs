@@ -82,23 +82,6 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Check if user is already logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-            fetch('/api/users/dashboard', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = '/dashboard';
-                } else {
-                    localStorage.removeItem('token');
-                }
-            });
-        }
-
         // Signup Form Handler
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -156,7 +139,7 @@
                     window.location.href = '/email-verification';
                 } else if (!response.ok) {
                     throw new Error(data.error);
-                } else {
+                } else if (response.ok && response.status !== 403){
                     // Store token and redirect to dashboard if verified
                     localStorage.setItem('token', data.token);
                     window.location.href = '/dashboard';
