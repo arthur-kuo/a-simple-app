@@ -149,13 +149,13 @@
                 if (response.status === 403) {
                     // Redirect to email verification page if the user is not verified
                     localStorage.setItem('token', data.token);
-                    window.location.href = '/email-verification';
+                    window.open('/email-verification');
                 } else if (!response.ok) {
                     throw new Error(data.error);
                 } else if (response.ok && response.status !== 403){
                     // Store token and redirect to dashboard if verified
                     localStorage.setItem('token', data.token);
-                    window.location.href = '/dashboard';
+                    window.open('/dashboard');
                 }
             } catch (error) {
                 errorElement.textContent = error.message;
