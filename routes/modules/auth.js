@@ -14,6 +14,7 @@ router.get('/google/callback',
         },
     ),
     (req, res) => {
+      console.log(req)
       res.redirect('/dashboard');
     },
 );
