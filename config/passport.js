@@ -64,7 +64,7 @@ passport.use(new GoogleStrategy({
     }
     const { name, email} = profile._json
     let result = await User.findOne({ where: { email } });
-    if (result) return done(null, resule)
+    if (result) return done(null, result)
     const randomPassword = Math.random().toString(36).slice(-8)
     const hashPassword = await bcrypt.hash(randomPassword, 10)
     if (!user) {
