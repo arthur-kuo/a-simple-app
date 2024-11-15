@@ -57,37 +57,7 @@ passport.use(new GoogleStrategy({
   scope: ['email', 'profile'],
   state: true,
 }, async (accessToken, refreshToken, profile, done) => {
-
-    if (!profile.emails || profile.emails.length === 0) {
-      return done(new Error('Email not found in Google profile'));
-    }
-    
-    const { name, email } = profile._json;
-    console.log(name, email)
-    let user = await User.findOne({ where: { email } });
-    
-    if (!user) {
-      const randomPassword = Math.random().toString(36).slice(-8);
-      const hashPassword = await bcrypt.hash(randomPassword, 10);
-      
-      user = await User.create({
-        name,
-        email,
-        password: hashPassword,
-        isVerified: true,
-      });
-    }
-
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    user.token = token;
     return done(null, user);
-
-
 }));
 
 passport.serializeUser((user, cb) => {
