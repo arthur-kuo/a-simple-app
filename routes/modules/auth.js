@@ -3,7 +3,7 @@ const router = express.Router();
 
 const passport = require('passport');
 
-router.get('/google', passport.authenticate('google'));
+router.post('/google', passport.authenticate('google'));
 
 router.get('/google/callback',
     passport.authenticate(

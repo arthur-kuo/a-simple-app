@@ -69,8 +69,8 @@ passport.use(new GoogleStrategy({
     const hashPassword = await bcrypt.hash(randomPassword, 10)
     if (!user) {
       user = await User.create({
-        email,
         name,
+        email,
         password: hashPassword,
         isVerified: true,
       });
