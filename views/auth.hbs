@@ -105,9 +105,10 @@
                 
                 if (!response.ok) {
                     throw new Error(data.error);
+                } else {
+                    alert(data.message)
                 }
 
-                window.location.href = '/email-verification';
             } catch (error) {
                 errorElement.textContent = error.message;
                 errorElement.style.display = 'block';
