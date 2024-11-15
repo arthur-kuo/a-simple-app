@@ -28,6 +28,7 @@
             margin-bottom: 10px;
         }
     </style>
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
     <div class="form-container">
@@ -72,8 +73,21 @@
                 <p id="login-error" class="error-message"></p>
             </form>
             
-            <div class="mb-4 text-center">
-                <a href="/api/auth/google" class="btn btn-outline-info btn-block">Google Login</a>
+            <div id="g_id_onload"
+                data-client_id="650381524710-rgfdftnskc8smlqn30h244bdcejipj90.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleGoogleCredential"
+                data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="rectangular"
+                data-theme="outline"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left">
             </div>
         </div>
     </div>
@@ -149,6 +163,31 @@
             }
         });
     });
+
+    async function handleGoogleCredential(response) {
+        try {
+            const res = await fetch('/api/auth/google/callback', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // body: JSON.stringify({
+                    // credential: response.credential
+                // })
+            });
+
+            const data = await res.json();
+            
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                window.location.href = '/dashboard';
+            }
+        } catch (error) {
+            console.error('Google login error:', error);
+            document.getElementById('login-error').textContent = 'Google login failed';
+            document.getElementById('login-error').style.display = 'block';
+        }
+    }
     </script>
 </body>
 </html>
