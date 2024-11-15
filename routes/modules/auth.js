@@ -8,9 +8,8 @@ router.get('/google', passport.authenticate('google', { scope: ['email', 'profil
 router.get('/auth/google/callback',
   passport.authenticate('google', { session: false }),
   (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
     const token = req.user.token;
-    res.redirect(`/dashboard?token=${token}`);
+    return res.status(200).json({message: 'Login successful', token, isVerified: true});
   });
 
 
