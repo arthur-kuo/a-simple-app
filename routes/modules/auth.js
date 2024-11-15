@@ -14,8 +14,8 @@ router.get('/google/callback',
         },
     ),
     (req, res) => {
-      console.log(req)
-      return res.status(200).json({message: 'Login successful'});
+      console.log('User:', req.user);
+      res.redirect('/dashboard');
     },
 );
 
