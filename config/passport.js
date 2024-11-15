@@ -58,28 +58,36 @@ passport.use(new GoogleStrategy({
   state: true,
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    // Check if profile has emails
     if (!profile.emails || profile.emails.length === 0) {
       return done(new Error('Email not found in Google profile'));
     }
-    const { name, email} = profile._json
-    let result = await User.findOne({ where: { email } });
-    if (result) return done(null, result)
-    const randomPassword = Math.random().toString(36).slice(-8)
-    const hashPassword = await bcrypt.hash(randomPassword, 10)
-    if (!result) {
+    
+    const { name, email } = profile._json;
+    let user = await User.findOne({ where: { email } });
+    
+    if (!user) {
+      const randomPassword = Math.random().toString(36).slice(-8);
+      const hashPassword = await bcrypt.hash(randomPassword, 10);
+      
       user = await User.create({
         name,
         email,
         password: hashPassword,
         isVerified: true,
       });
-      console.log(user)
     }
-    return done(null, user)
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    user.token = token;
+    return done(null, user);
   } catch (err) {
     console.error('Error during Google login:', err);
-    done(err, false);
+    return done(err, false);
   }
 }));
 

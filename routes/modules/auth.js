@@ -6,15 +6,17 @@ const passport = require('passport');
 router.post('/google', passport.authenticate('google'));
 
 router.get('/google/callback',
-    passport.authenticate(
-        'google',
-        { 
-          successRedirect: '/dashboard',
-          successMessage: true,
-          failureRedirect: '/',
-          failureMessage: true,
-        },
-    )
+  passport.authenticate(
+      'google',
+      { session: false },
+  ),
+  (req, res) => {
+    res.json({
+      success: true,
+      token: req.user.token,
+      message: 'Google login successful'
+    });
+  }
 );
 
 module.exports = router;
