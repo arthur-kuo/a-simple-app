@@ -167,7 +167,7 @@
     async function handleGoogleCredential(response) {
         try {
             const res = await fetch('/api/auth/google/callback', {
-                method: 'post',
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
