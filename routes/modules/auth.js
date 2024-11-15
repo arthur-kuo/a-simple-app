@@ -11,7 +11,7 @@ router.get('/google/callback',
       { session: false },
   ),
   (req, res) => {
-    // res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Origin', '*');
     res.json({
       success: true,
       token: req.user.token,
