@@ -16,11 +16,13 @@ if (process.env.NODE_ENV !== 'production') {
 const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors(corsOptions));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.json())
 app.use(express.urlencoded({extended: true}));
