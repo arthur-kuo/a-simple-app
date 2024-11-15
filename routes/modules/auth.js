@@ -8,7 +8,8 @@ router.get('/google', passport.authenticate('google'));
 router.get('/google/callback',
     passport.authenticate(
         'google',
-        {
+        { 
+          successRedirect: '/dashboard',
           failureRedirect: '/',
           failureMessage: true,
         },

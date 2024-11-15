@@ -58,32 +58,24 @@ passport.use(new GoogleStrategy({
   state: true,
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    console.log('Google profile:', profile);
-
     // Check if profile has emails
     if (!profile.emails || profile.emails.length === 0) {
       return done(new Error('Email not found in Google profile'));
     }
-
     const { name, email} = profile._json
-    
-    let user = await User.findOne({ where: { email } });
-
+    let result = await User.findOne({ where: { email } });
+    if (result) return done(null, resule)
+    const randomPassword = Math.random().toString(36).slice(-8)
+    const hashPassword = await bcrypt.hash(randomPassword, 10)
     if (!user) {
       user = await User.create({
         email,
         name,
+        password: hashPassword,
         isVerified: true,
       });
     }
-
-    // Save the user
-    console.log('Saving user:', user);
-    await user.save();
-
-    // Return the user to passport
-    done(null, user);
-
+    return done(null, user)
   } catch (err) {
     console.error('Error during Google login:', err);
     done(err, false);
