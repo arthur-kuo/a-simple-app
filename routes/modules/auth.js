@@ -3,14 +3,19 @@ const router = express.Router();
 
 const passport = require('passport');
 
-router.get('/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+router.get('/google', passport.authenticate('google'));
 
-router.get('/auth/google/callback',
-  passport.authenticate('google', { session: false }),
-  (req, res) => {
-    const token = req.user.token;
-    return res.status(200).json({message: 'Login successful', token, isVerified: true});
-  });
-
+router.get('/google/callback',
+    passport.authenticate(
+        'google',
+        { 
+          failureRedirect: '/',
+          failureMessage: true,
+        },
+    ),
+    (req, res) => {
+      res.redirect('/dashboard');
+    },
+);
 
 module.exports = router;
