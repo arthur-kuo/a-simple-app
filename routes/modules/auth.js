@@ -10,13 +10,11 @@ router.get('/google/callback',
         'google',
         { 
           successRedirect: '/dashboard',
+          successMessage: true,
           failureRedirect: '/',
           failureMessage: true,
         },
-    ),
-    (req, res) => {
-      res.status(200).json({message: 'Login successful', token});
-    },
+    )
 );
 
 module.exports = router;
