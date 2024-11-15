@@ -57,12 +57,13 @@ passport.use(new GoogleStrategy({
   scope: ['email', 'profile'],
   state: true,
 }, async (accessToken, refreshToken, profile, done) => {
-  try {
+
     if (!profile.emails || profile.emails.length === 0) {
       return done(new Error('Email not found in Google profile'));
     }
     
     const { name, email } = profile._json;
+    console.log(name, email)
     let user = await User.findOne({ where: { email } });
     
     if (!user) {
@@ -85,10 +86,8 @@ passport.use(new GoogleStrategy({
 
     user.token = token;
     return done(null, user);
-  } catch (err) {
-    console.error('Error during Google login:', err);
-    return done(err, false);
-  }
+
+
 }));
 
 passport.serializeUser((user, cb) => {
