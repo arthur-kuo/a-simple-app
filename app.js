@@ -7,6 +7,7 @@ const passport = require('./config/passport');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger-output.json');
+const { SwaggerUIBundle, SwaggerUIStandalonePreset } = require('swagger-ui-dist');
 const bodyParser = require('body-parser');
 
 if (process.env.NODE_ENV !== 'production') {

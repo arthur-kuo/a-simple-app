@@ -1,23 +1,18 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "A Simple App",
     "version": "1.0.0",
     "description": "This document is for a-simple-app back-end API"
   },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
-  ],
-  "securityDefinitions": {
-    "bearerAuth": {
-      "type": "http",
-      "scheme": "bearer",
-      "bearerFormat": "JWT"
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://localhost:3000/"
     }
-  },
+  ],
   "paths": {
     "/api/users/signup": {
       "post": {
@@ -121,22 +116,21 @@
         }
       }
     },
-    "/api/users/resendVerifictionEmail": {
+    "/api/users/resendVerificationEmail": {
       "get": {
         "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+        "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
           }
-        }
-      }
-    },
-    "/api/users/dashboard": {
-      "get": {
-        "description": "",
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -146,9 +140,24 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/users/dashboard": {
+      "get": {
+        "description": "",
+        "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
-          "404": {
-            "description": "Not Found"
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -156,6 +165,11 @@
     "/api/users/dashboard/stats": {
       "get": {
         "description": "",
+        "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -169,6 +183,11 @@
     "/api/users/{id}/reset-password": {
       "put": {
         "description": "",
+        "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -214,6 +233,11 @@
     "/api/users/{id}": {
       "get": {
         "description": "",
+        "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -236,6 +260,11 @@
       },
       "put": {
         "description": "",
+        "security": [
+           {
+              "bearerAuth": []
+           }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -286,58 +315,67 @@
       "get": {
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
           }
         }
       }
     }
   },
-  "definitions": {
-    "User": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "number",
-          "example": 1
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe"
-        },
-        "email": {
-          "type": "string",
-          "example": "john@example.com"
-        },
-        "loginCount": {
-          "type": "number",
-          "example": 5
-        },
-        "lastSession": {
-          "type": "string",
-          "example": "2024-01-01T00:00:00.000Z"
-        },
-        "createdAt": {
-          "type": "string",
-          "example": "2024-01-01T00:00:00.000Z"
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "loginCount": {
+            "type": "number",
+            "example": 5
+          },
+          "lastSession": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        }
+      },
+      "UserStats": {
+        "type": "object",
+        "properties": {
+          "totalUsers": {
+            "type": "number",
+            "example": 100
+          },
+          "activeSessionsToday": {
+            "type": "number",
+            "example": 50
+          },
+          "avgActiveSessions": {
+            "type": "string",
+            "example": "45.50"
+          }
         }
       }
     },
-    "UserStats": {
-      "type": "object",
-      "properties": {
-        "totalUsers": {
-          "type": "number",
-          "example": 100
-        },
-        "activeSessionsToday": {
-          "type": "number",
-          "example": 50
-        },
-        "avgActiveSessions": {
-          "type": "string",
-          "example": "45.50"
-        }
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

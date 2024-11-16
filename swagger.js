@@ -1,7 +1,7 @@
 const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
-  swagger: '2.0',
+  openapi: '3.0.0',
   info: {
     title: 'A Simple App',
     version: '1.0.0',
