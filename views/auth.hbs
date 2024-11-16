@@ -164,11 +164,29 @@
         });
     });
 
-    function handleGoogleCredential(response) {
-        const token = response.credential;
-        
-        // 直接重定向到 Google OAuth 流程
-        window.location.href = '/api/auth/google';
+    async function handleGoogleCredential(response) {
+        try {
+            const res = await fetch('/api/auth/google/callback', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // body: JSON.stringify({
+                    // credential: response.credential
+                // })
+            });
+
+            const data = await res.json();
+            
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                window.location.href = '/dashboard';
+            }
+        } catch (error) {
+            console.error('Google login error:', error);
+            document.getElementById('login-error').textContent = 'Google login failed';
+            document.getElementById('login-error').style.display = 'block';
+        }
     }
     </script>
 </body>
