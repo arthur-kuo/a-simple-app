@@ -1,3 +1,3 @@
-## a simple app
+# a simple app
 
-# swagger on /api/docs
+## swagger on /api/docs
