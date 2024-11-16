@@ -14,7 +14,10 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 const corsOptions = {
-  origin: '*',
+  origin: [
+    process.env.APP_URL,
+    'https://accounts.google.com/'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
