@@ -11,12 +11,16 @@ router.get('/google/callback',
         { 
           failureRedirect: '/',
           failureMessage: true,
+          session: true
         },
     ),
     (req, res) => {
-      console.log('User:', req.user);
-      res.redirect('/dashboard');
-    },
+      res.header('Access-Control-Allow-Origin', process.env.APP_URL);
+      res.header('Access-Control-Allow-Credentials', 'true');
+      
+      const token = generateToken(req.user);
+      res.redirect(`${process.env.APP_URL}/dashboard?token=${token}`);
+    }
 );
 
 module.exports = router;

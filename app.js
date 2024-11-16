@@ -16,11 +16,16 @@ if (process.env.NODE_ENV !== 'production') {
 const corsOptions = {
   origin: [
     process.env.APP_URL,
-    'https://accounts.google.com/'
+    'https://accounts.google.com/',
+    'http://localhost:3000',
+    'https://a-simple-app.vercel.app'
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 const app = express();
 const port = process.env.PORT || 3000;

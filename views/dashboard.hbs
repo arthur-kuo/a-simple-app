@@ -139,13 +139,14 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/';
-            return;
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        if (token) {
+            localStorage.setItem('token', token);
+            window.history.replaceState({}, document.title, '/dashboard');
         }
 
-        // Format date function
         function formatDate(dateString) {
             const options = {
                 year: 'numeric',
