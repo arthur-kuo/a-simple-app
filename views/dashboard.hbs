@@ -139,12 +139,23 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // First check URL parameters for token
         const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+        const urlToken = urlParams.get('token');
         
-        if (token) {
-            localStorage.setItem('token', token);
+        // If token exists in URL, save it and clean URL
+        if (urlToken) {
+            localStorage.setItem('token', urlToken);
             window.history.replaceState({}, document.title, '/dashboard');
+        }
+
+        // Get token from localStorage
+        const token = localStorage.getItem('token');
+
+        // If no token is found, redirect to login page
+        if (!token) {
+            window.location.href = '/';
+            return;
         }
 
         function formatDate(dateString) {
@@ -162,7 +173,15 @@
         // Load dashboard data
         async function loadDashboard() {
             try {
-                const userId = JSON.parse(atob(token.split('.')[1])).userId;
+                let userId;
+                try {
+                    userId = JSON.parse(atob(token.split('.')[1])).userId;
+                } catch (error) {
+                    console.error('Invalid token format:', error);
+                    localStorage.removeItem('token');
+                    window.location.href = '/';
+                    return;
+                }
                 
                 // Fetch user info
                 const userResponse = await fetch(`/api/users/${userId}`, {
@@ -170,6 +189,14 @@
                         'Authorization': `Bearer ${token}`
                     }
                 });
+
+                // If unauthorized, redirect to login
+                if (userResponse.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/';
+                    return;
+                }
+
                 const userData = await userResponse.json();
                 
                 // Display user info
@@ -212,11 +239,18 @@
                 `).join('');
             } catch (error) {
                 console.error('Error loading dashboard:', error);
+                // If there's an error, show a message to the user
+                document.querySelector('.dashboard-container').innerHTML = `
+                    <h1>Dashboard</h1>
+                    <p style="color: red;">Error loading dashboard data. Please try logging in again.</p>
+                    <button onclick="window.location.href='/'">Return to Login</button>
+                `;
             }
         }
 
         // Initial load
         loadDashboard();
+
 
         // Update name handler
         document.getElementById('update-name-form').addEventListener('submit', async (e) => {
